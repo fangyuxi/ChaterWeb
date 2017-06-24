@@ -42,14 +42,14 @@ public class Message {
 
     @JoinColumn(name = "senderId")
     @ManyToOne(optional = false)
-    private String sender;
+    private User sender;
 
     @Column(updatable = false, insertable = false, nullable = false)
     private String senderId;
 
     @JoinColumn(name = "receiverId")
     @ManyToOne
-    private String receiver;
+    private User receiver;
 
     @Column(updatable = false, insertable = false, nullable = false)
     private String receiverId;
@@ -59,8 +59,6 @@ public class Message {
     private Group group;
     @Column(updatable = false, insertable = false, nullable = false)
     private String groupId;
-
-
 
     public String getId() {
         return id;
@@ -110,11 +108,11 @@ public class Message {
         this.updateAt = updateAt;
     }
 
-    public String getSender() {
+    public User getSender() {
         return sender;
     }
 
-    public void setSender(String sender) {
+    public void setSender(User sender) {
         this.sender = sender;
     }
 
@@ -126,20 +124,20 @@ public class Message {
         this.senderId = senderId;
     }
 
+    public User getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(User receiver) {
+        this.receiver = receiver;
+    }
+
     public String getReceiverId() {
         return receiverId;
     }
 
     public void setReceiverId(String receiverId) {
         this.receiverId = receiverId;
-    }
-
-    public String getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
     }
 
     public Group getGroup() {

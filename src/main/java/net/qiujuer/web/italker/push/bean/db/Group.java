@@ -25,7 +25,7 @@ public class Group {
     private String name;
 
     @Column(nullable = false)
-    private String desciption;
+    private String description;
 
     @Column(nullable = false)
     private String picture;
@@ -43,7 +43,7 @@ public class Group {
     private User owner;
 
     @Column(nullable = false, updatable = false,insertable = false)
-    private String ownerid;
+    private String ownerId;
 
 
     public String getId() {
@@ -62,12 +62,12 @@ public class Group {
         this.name = name;
     }
 
-    public String getDesciption() {
-        return desciption;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDesciption(String desciption) {
-        this.desciption = desciption;
+    public void setDescription(String desciption) {
+        this.description = desciption;
     }
 
     public String getPicture() {
@@ -102,11 +102,11 @@ public class Group {
         this.owner = owner;
     }
 
-    public String getOwnerid() {
-        return ownerid;
+    public String getOwnerId() {
+        return ownerId;
     }
 
-    public void setOwnerid(String ownerid) {
-        this.ownerid = ownerid;
+    public void setOwnerId(String ownerid) {
+        this.ownerId = ownerid;
     }
 }

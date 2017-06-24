@@ -27,7 +27,7 @@ public class Apply {
     @JoinColumn(name = "applicantId")
     private User applicant;
 
-    @Column(nullable = false)
+    @Column(updatable = false, insertable = false, nullable = false)
     private String applicantId;
 
     @Column(nullable = false)

@@ -63,4 +63,42 @@ public class Hib {
             sessionFactory.close();
         }
     }
+
+    public interface Query<T>{
+        T query(Session session);
+    }
+
+    public interface QueryOnly{
+        void queryOnly(Session session);
+    }
+
+    public static void queryOnly(QueryOnly query){
+        Session session = sessionFactory.openSession();
+        final Transaction transaction = session.beginTransaction();
+
+        try{
+            query.queryOnly(session);
+        }catch (Exception e){
+            e.printStackTrace();
+            transaction.rollback();;
+        }finally {
+            session.close();
+        }
+    }
+
+    public static<T> T query(Query<T> query){
+        Session session = sessionFactory.openSession();
+        final Transaction transaction = session.beginTransaction();
+
+        T t = null;
+        try{
+            t = query.query(session);
+        }catch (Exception e){
+            e.printStackTrace();
+            transaction.rollback();
+        }finally {
+            session.close();
+        }
+        return t;
+    }
 }
