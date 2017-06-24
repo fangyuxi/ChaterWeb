@@ -2,6 +2,7 @@ package net.qiujuer.web.italker.push.bean.card;
 
 import com.google.gson.annotations.Expose;
 import com.sun.org.apache.xpath.internal.operations.Bool;
+import net.qiujuer.web.italker.push.bean.db.User;
 
 import java.time.LocalDateTime;
 
@@ -30,6 +31,18 @@ public class UserCard {
     // 我与当前uer关系
     @Expose
     private Boolean isFollow;
+
+    public UserCard(final User user){
+        this.id = user.getId();
+        this.name = user.getName();
+        this.phone = user.getPhone();
+        this.portrait = user.getPortrait();
+        this.desc = user.getDesciption();
+        this.sex = user.getSex();
+        this.modifyAt = user.getUpdateAt();
+
+        // TODO 得到关注和粉丝
+    }
 
     //最后一次更新时间
     @Expose
