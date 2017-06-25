@@ -75,11 +75,11 @@ public class AccountService {
 
     //POST 127.0.0.1/api/account/login{pushId}
     @POST
-    @Path("/bind")
+    @Path("/bind/{pushId}")
     // 指定请求与返回的相应体为JSON
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ResponseModel<AccountRspModel> bind(@HeaderParam("token") String token,String pushId) {
+    public ResponseModel<AccountRspModel> bind(@HeaderParam("token") String token, @PathParam("pushId") String pushId) {
         if (Strings.isNullOrEmpty(token) || Strings.isNullOrEmpty(pushId)){
             return ResponseModel.buildParameterError();
         }
