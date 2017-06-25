@@ -80,7 +80,6 @@ public class UserFactory {
             user.setPushId(pushId);
             return Hib.query(session -> {
                 session.saveOrUpdate(user);
-                session.getTransaction().commit();
                 return user;
             });
         }
@@ -92,13 +91,15 @@ public class UserFactory {
         user.setPhone(account);
         user.setName(name);
 
-        //return Hib.query(session -> (User) session.save(user));
         return Hib.query(new Hib.Query<User>() {
             @Override
             public User query(Session session) {
-                String u = (String) session.save(user);
-                session.getTransaction().commit();
-                return null;
+                String id = (String) session.save(user);
+                if (!Strings.isNullOrEmpty(id)){
+                    return user;
+                }else{
+                    return null;
+                }
             }
         });
     }
@@ -109,7 +110,6 @@ public class UserFactory {
         user.setToken(newToken);
         return Hib.query(session -> {
             session.saveOrUpdate(user);
-            session.getTransaction().commit();
             return user;
         });
     }

@@ -78,6 +78,7 @@ public class Hib {
 
         try{
             query.queryOnly(session);
+            transaction.commit();
         }catch (Exception e){
             e.printStackTrace();
             transaction.rollback();;
@@ -93,6 +94,7 @@ public class Hib {
         T t = null;
         try{
             t = query.query(session);
+            transaction.commit();
         }catch (Exception e){
             e.printStackTrace();
             transaction.rollback();
