@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response;
  */
 // 127.0.0.1/api/account/...
 @Path("/account")
-public class AccountService {
+public class AccountService extends BaseService{
 
 
     //POST 127.0.0.1/api/account/login
@@ -36,8 +36,12 @@ public class AccountService {
 
         User user = UserFactory.login(model.getAccount(),model.getPassword());
         if (user != null){
-            AccountRspModel rspModel = new AccountRspModel(user);
-            return ResponseModel.buildOk(rspModel);
+            if (model.getPushId() != null){
+                return bindPushId(user,model.getPushId());
+            }else{
+                AccountRspModel rspModel = new AccountRspModel(user);
+                return ResponseModel.buildOk(rspModel);
+            }
         }else{
             return ResponseModel.buildLoginError();
         }
@@ -66,8 +70,13 @@ public class AccountService {
         user = UserFactory.register(model.getAccount(),model.getPassword(),model.getName());
 
         if (user != null){
-            AccountRspModel rspModel = new AccountRspModel(user,false);
-            return ResponseModel.buildOk(rspModel);
+            if (model.getPushId() != null){
+                return bindPushId(user,model.getPushId());
+            }else{
+                AccountRspModel rspModel = new AccountRspModel(user,false);
+                return ResponseModel.buildOk(rspModel);
+            }
+
         }else {
             return ResponseModel.buildRegisterError();
         }
@@ -84,19 +93,22 @@ public class AccountService {
             return ResponseModel.buildParameterError();
         }
 
-        User user = UserFactory.findByToken(token);
-        if (user != null){
-            user = UserFactory.bindPushId(user,pushId);
-            if (user != null){
-                AccountRspModel accountRspModel = new AccountRspModel(user);
-                return ResponseModel.buildOk(accountRspModel);
-            }else{
-                return ResponseModel.buildServiceError();
-            }
-        }else{
-            return ResponseModel.buildOk();
-        }
+        User user = getSelf();
+        return bindPushId(user,pushId);
     }
 
+    //绑定pushId
+    private ResponseModel<AccountRspModel> bindPushId(User user,String pushId){
+        if (Strings.isNullOrEmpty(pushId) || user == null){
+            return null;
+        }
 
+        user = UserFactory.bindPushId(user,pushId);
+        if (user != null){
+            AccountRspModel accountRspModel = new AccountRspModel(user,true);
+            return ResponseModel.buildOk(accountRspModel);
+        }else{
+            return ResponseModel.buildServiceError();
+        }
+    }
 }

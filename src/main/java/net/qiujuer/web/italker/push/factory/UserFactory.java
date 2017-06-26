@@ -28,6 +28,13 @@ public class UserFactory {
         return Hib.query(session -> (User)session.createQuery("from User where token=:token").setParameter("token", token).uniqueResult());
     }
 
+    public static User update(User user){
+        return Hib.query(session -> {
+            session.saveOrUpdate(user);
+            return user;
+        });
+    }
+
     public static User register(String account, String password, String name){
 
         account = account.trim();
@@ -66,7 +73,7 @@ public class UserFactory {
 
             for (User u : users){
                 u.setPushId(null);
-                session.saveOrUpdate(u);
+                update(user);
             }
         });
 
@@ -78,10 +85,7 @@ public class UserFactory {
             }
 
             user.setPushId(pushId);
-            return Hib.query(session -> {
-                session.saveOrUpdate(user);
-                return user;
-            });
+            return update(user);
         }
     }
 
@@ -108,10 +112,7 @@ public class UserFactory {
         String newToken = UUID.randomUUID().toString();
         newToken = TextUtil.encodeBase64(newToken);
         user.setToken(newToken);
-        return Hib.query(session -> {
-            session.saveOrUpdate(user);
-            return user;
-        });
+        return update(user);
     }
 
     private static String encodePassword(String password){

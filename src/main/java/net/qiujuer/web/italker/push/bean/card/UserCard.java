@@ -33,12 +33,19 @@ public class UserCard {
     private Boolean isFollow;
 
     public UserCard(final User user){
+        this(user,false);
+
+        // TODO 得到关注和粉丝
+    }
+
+    public UserCard(final User user, boolean isFollow){
         this.id = user.getId();
         this.name = user.getName();
         this.phone = user.getPhone();
         this.portrait = user.getPortrait();
         this.desc = user.getDesciption();
         this.sex = user.getSex();
+        this.isFollow = isFollow;
         this.modifyAt = user.getUpdateAt();
 
         // TODO 得到关注和粉丝
