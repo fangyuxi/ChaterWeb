@@ -13,16 +13,18 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 // 127.0.0.1/api/account/...
 @Path("/user")
 public class UserService extends BaseService{
 
-
-
-    //POST 127.0.0.1/api/user/update
+    //更新我的用户信息
+    //PUT 127.0.0.1/api/user/update
     @PUT
-    //@Path("/update")
+    @Path("/update")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public ResponseModel<UserCard> update(@HeaderParam("token")String token, UpdateInfoModel model){
@@ -35,5 +37,32 @@ public class UserService extends BaseService{
         self = UserFactory.update(self);
         return ResponseModel.buildOk(new UserCard(self,true));
 
+    }
+
+    //获取我关注的
+    //GET 127.0.0.1/api/user/followings
+    @GET
+    @Path("/followings")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public ResponseModel<List<UserCard>> following(){
+        User self = getSelf();
+        List<User> users = UserFactory.getFollowing(self);
+        List<UserCard> userCards = new ArrayList<>();
+        for (User user:
+             users) {
+            userCards.add(new UserCard(user,true));
+        }
+        return ResponseModel.buildOk(userCards);
+    }
+
+
+    //关注接口
+    //PUT 127.0.0.1/api/user/follow/{userId}
+    @PUT
+    @Path("/follow/{userId}")
+    public ResponseModel<UserCard> follow(@PathParam("userId") String userId){
+        User self = getSelf();
+        return null;
     }
 }

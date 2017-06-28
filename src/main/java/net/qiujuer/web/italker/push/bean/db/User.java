@@ -64,6 +64,34 @@ public class User implements Principal{
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Group> groups = new HashSet<>();
 
+    //我关注的人
+    @JoinColumn(name = "originId")
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<UserFollow> following = new HashSet<>();
+
+    //关注我的人
+    @JoinColumn(name = "targetId")
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<UserFollow> followers= new HashSet<>();
+
+    public Set<UserFollow> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(Set<UserFollow> following) {
+        this.following = following;
+    }
+
+    public Set<UserFollow> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(Set<UserFollow> followers) {
+        this.followers = followers;
+    }
+
     public String getId() {
         return id;
     }

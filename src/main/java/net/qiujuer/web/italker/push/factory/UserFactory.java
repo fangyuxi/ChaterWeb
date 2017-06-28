@@ -2,16 +2,15 @@ package net.qiujuer.web.italker.push.factory;
 
 
 import com.google.common.base.Strings;
+import net.qiujuer.web.italker.push.bean.card.UserCard;
 import net.qiujuer.web.italker.push.bean.db.User;
+
+import net.qiujuer.web.italker.push.bean.db.UserFollow;
 import org.hibernate.Session;
-import org.hibernate.query.Query;
-import sun.nio.cs.US_ASCII;
 import utils.Hib;
 import utils.TextUtil;
 
-import javax.xml.soap.Text;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class UserFactory {
 
@@ -28,6 +27,11 @@ public class UserFactory {
         return Hib.query(session -> (User)session.createQuery("from User where token=:token").setParameter("token", token).uniqueResult());
     }
 
+    public  static User findById(String id){
+        return Hib.query(session -> (User)session.createQuery("from User where id=:id").setParameter("id", id).uniqueResult());
+    }
+
+    //更新当前用户
     public static User update(User user){
         return Hib.query(session -> {
             session.saveOrUpdate(user);
@@ -89,21 +93,46 @@ public class UserFactory {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public static List<User> getFollowing(User user){
+        return Hib.query(new Hib.Query<List<User>>() {
+            @Override
+            public List<User> query(Session session) {
+                session.load(user,user.getId());
+                Set<UserFollow> userFollows = user.getFollowing();
+                List<User> userCards = new ArrayList<>();
+                for (UserFollow follow:
+                     userFollows) {
+                    userCards.add(follow.getOrigin());
+                }
+                return userCards;
+            }
+        });
+    }
+
+//    public static User follow(User user, String userId){
+//        return Hib.query(new Hib.Query<User>() {
+//            @Override
+//            public User query(Session session) {
+//                User targetUser = (User) session.createQuery("from User where id=:userId").setParameter("userId",userId).uniqueResult();
+//
+//                return null;
+//            }
+//        });
+//    }
+
     private static User createUser(String account, String password, String name){
         User user = new User();
         user.setPassWord(password);
         user.setPhone(account);
         user.setName(name);
 
-        return Hib.query(new Hib.Query<User>() {
-            @Override
-            public User query(Session session) {
-                String id = (String) session.save(user);
-                if (!Strings.isNullOrEmpty(id)){
-                    return user;
-                }else{
-                    return null;
-                }
+        return Hib.query(session -> {
+            String id = (String) session.save(user);
+            if (!Strings.isNullOrEmpty(id)){
+                return user;
+            }else{
+                return null;
             }
         });
     }
