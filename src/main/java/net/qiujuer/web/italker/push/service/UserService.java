@@ -63,6 +63,15 @@ public class UserService extends BaseService{
     @Path("/follow/{userId}")
     public ResponseModel<UserCard> follow(@PathParam("userId") String userId){
         User self = getSelf();
-        return null;
+        if (self.getId().equalsIgnoreCase(userId)){
+            return ResponseModel.buildParameterError();
+        }
+        User user = UserFactory.findById(userId);
+        if (user == null){
+            return ResponseModel.buildNotFoundUserError("没有发现该用户");
+        }
+
+
+
     }
 }
