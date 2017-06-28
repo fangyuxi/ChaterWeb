@@ -103,7 +103,8 @@ public class UserFactory {
                 List<User> userCards = new ArrayList<>();
                 for (UserFollow follow:
                      userFollows) {
-                    userCards.add(follow.getOrigin());
+
+                    userCards.add(follow.getTarget());
                 }
                 return userCards;
             }
@@ -116,13 +117,35 @@ public class UserFactory {
         if (follow != null){
             return follow.getTarget();
         }
-        return null;
+
+        return Hib.query(new Hib.Query<User>() {
+            @Override
+            public User query(Session session) {
+
+                session.load(user,user.getId());
+                session.load(targetUser,targetUser.getId());
+
+                UserFollow originFollow = new UserFollow();
+                originFollow.setOrigin(user);
+                originFollow.setTarget(targetUser);
+                originFollow.setAlias(alias);
+
+                UserFollow targetFollow = new UserFollow();
+                targetFollow.setOrigin(targetUser);
+                targetFollow.setTarget(user);
+
+                session.save(originFollow);
+                session.save(targetFollow);
+
+                return targetUser;
+            }
+        });
     }
 
     private static UserFollow getUserFollow(User user, User targetUser){
         return Hib.query(session -> (UserFollow)session.createQuery("from UserFollow where originId = :originId and targetId = :targetId")
                 .setParameter("originId",user.getId())
-                .setParameter("targetId", targetUser.getId()).uniqueResult());
+                .setParameter("targetId", targetUser.getId()).setMaxResults(1).uniqueResult());
     }
 
     private static User createUser(String account, String password, String name){

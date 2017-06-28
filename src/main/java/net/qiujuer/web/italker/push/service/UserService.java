@@ -40,12 +40,12 @@ public class UserService extends BaseService{
     }
 
     //获取我关注的
-    //GET 127.0.0.1/api/user/followings
+    //GET 127.0.0.1/api/user/contact
     @GET
-    @Path("/followings")
+    @Path("/contact")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ResponseModel<List<UserCard>> following(){
+    public ResponseModel<List<UserCard>> contact(){
         User self = getSelf();
         List<User> users = UserFactory.getFollowing(self);
         List<UserCard> userCards = new ArrayList<>();
@@ -61,17 +61,25 @@ public class UserService extends BaseService{
     //PUT 127.0.0.1/api/user/follow/{userId}
     @PUT
     @Path("/follow/{userId}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public ResponseModel<UserCard> follow(@PathParam("userId") String userId){
         User self = getSelf();
+        // 不能关注自己
         if (self.getId().equalsIgnoreCase(userId)){
             return ResponseModel.buildParameterError();
         }
+        //不存在该用户
         User user = UserFactory.findById(userId);
         if (user == null){
             return ResponseModel.buildNotFoundUserError("没有发现该用户");
         }
-
-
-
+        //服务器异常
+        User targetUser =  UserFactory.follow(self,user,null);
+        if (targetUser == null){
+            return ResponseModel.buildServiceError();
+        }
+        UserCard userCard = new UserCard(targetUser);
+        return ResponseModel.buildOk(userCard);
     }
 }

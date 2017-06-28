@@ -15,7 +15,7 @@
       <configuration>
         <datasource-map>
           <unit-entry name="hibernate.cfg.xml" />
-          <unit-entry name="resources:hibernate.cfg.xml" />
+          <unit-entry name="resources:hibernate.cfg.xml" value="4036d6d8-7d0b-4f8f-9cd0-4232ae8ec827" />
         </datasource-map>
         <naming-strategy-map />
         <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/resources/hibernate.cfg.xml" />
